@@ -5,10 +5,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["RentXApi/RentX/RentX.csproj", "RentX/"]
-RUN dotnet restore "RentX/RentX.csproj"
+COPY ["RentX.csproj", "."]
+RUN dotnet restore "./RentX.csproj"
 COPY . .
-WORKDIR "/src/RentX"
+WORKDIR "/src/."
 RUN dotnet build "RentX.csproj" -c Release -o /app/build
 
 FROM build AS publish

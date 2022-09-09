@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RentX.Dtos.Category;
 using RentX.Models;
+using RentX.Services.Category;
 
 namespace RentX.Controllers
 {
@@ -9,18 +9,18 @@ namespace RentX.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly IMapper _mapper;
+        private readonly ICategoryService categoryService;
 
-        public CategoryController(IMapper mapper)
+        public CategoryController(ICategoryService categoryService)
         {
-            _mapper = mapper;
+            this.categoryService = categoryService;
         }
 
         [HttpPost]
-        public ActionResult<Category> ShowCategory(GetCategoryDto category)
+        public async Task<ActionResult<ServiceResponse<GetCategoryDto>>> GetCategoryById(GetCategoryDto category)
         {
-            var res = _mapper.Map<Category>(category);
-            return res;
+            var res = await categoryService.GetCategoryByIdAsync(category);
+            return res is null ? Ok(res) : BadRequest(res);
         }
     }
 }
