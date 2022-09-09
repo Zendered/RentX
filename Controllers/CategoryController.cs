@@ -20,7 +20,7 @@ namespace RentX.Controllers
         public async Task<ActionResult<ServiceResponse<GetCategoryDto>>> GetCategoryById(Guid id)
         {
             var res = await categoryService.GetCategoryByIdAsync(id);
-            return res is not null ?
+            return res.Data is not null ?
                 Ok(res) :
                 BadRequest(res);
         }
@@ -29,7 +29,16 @@ namespace RentX.Controllers
         public async Task<ActionResult<ServiceResponse<GetCategoryDto>>> AddCategoryAsync(AddCategoryDto category)
         {
             var res = await categoryService.AddCategoryAsync(category);
-            return res is not null ?
+            return res.Data is not null ?
+                Ok(res) :
+                BadRequest(res);
+        }
+
+        [HttpGet("All categories")]
+        public async Task<ActionResult<ServiceResponse<GetCategoryDto>>> GetAllCategoriesAsync()
+        {
+            var res = await categoryService.GetAllCategoriesAsync();
+            return res.Data is not null ?
                 Ok(res) :
                 BadRequest(res);
         }

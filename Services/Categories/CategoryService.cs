@@ -14,11 +14,16 @@ namespace RentX.Services.Categories
 
             try
             {
-                if (string.IsNullOrWhiteSpace(newCategory.ImageName))
+                if (string.IsNullOrEmpty(newCategory.Name) || string.IsNullOrEmpty(newCategory.Description))
                 {
+                    var a = DateTime.UtcNow;
+                    var aa = DateTime.UtcNow.Date;
+                    var aaa = DateTime.Now;
+                    var aaaa = DateTime.Now.Date;
+
                     res.Data = null;
-                    res.Succes = false;
-                    res.Message = "Invalid Data, please try again";
+                    res.Success = false;
+                    res.Message = "Invalid Name/Description, please try again";
                     return res;
                 }
 
@@ -26,13 +31,41 @@ namespace RentX.Services.Categories
 
                 var category = Mapper.Map<Category>(newCategory);
                 res.Data = Mapper.Map<GetCategoryDto>(category);
+                res.Message = "Category created";
 
                 await CategoryContext.Categories.AddAsync(category);
                 await CategoryContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                res.Succes = false;
+                res.Success = false;
+                res.Message = ex.Message;
+            }
+            return res;
+        }
+
+        public async Task<ServiceResponse<List<GetCategoryDto>>> GetAllCategoriesAsync()
+        {
+            var res = new ServiceResponse<List<GetCategoryDto>>();
+
+            try
+            {
+                var category = await CategoryContext.Categories.ToListAsync();
+
+                if (category is null)
+                {
+                    res.Data = null;
+                    res.Success = false;
+                    res.Message = "Category not found";
+                    return res;
+                }
+
+                res.Data = Mapper.Map<List<GetCategoryDto>>(category);
+            }
+            catch (Exception ex)
+            {
+
+                res.Success = false;
                 res.Message = ex.Message;
             }
             return res;
@@ -49,7 +82,7 @@ namespace RentX.Services.Categories
                 if (category is null)
                 {
                     res.Data = null;
-                    res.Succes = false;
+                    res.Success = false;
                     res.Message = "Category not found";
                     return res;
                 }
@@ -59,7 +92,7 @@ namespace RentX.Services.Categories
             catch (Exception ex)
             {
 
-                res.Succes = false;
+                res.Success = false;
                 res.Message = ex.Message;
             }
             return res;

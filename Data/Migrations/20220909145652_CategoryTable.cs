@@ -14,8 +14,8 @@ namespace RentX.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CarId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ImageName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Created_At = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

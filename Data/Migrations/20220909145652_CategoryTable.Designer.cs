@@ -12,7 +12,7 @@ using RentX.Data;
 namespace RentX.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220909050730_CategoryTable")]
+    [Migration("20220909145652_CategoryTable")]
     partial class CategoryTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,13 +30,14 @@ namespace RentX.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CarId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("Created_At")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ImageName")
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
