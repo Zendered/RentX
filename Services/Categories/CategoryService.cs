@@ -14,20 +14,7 @@ namespace RentX.Services.Categories
 
             try
             {
-                if (string.IsNullOrEmpty(newCategory.Name) || string.IsNullOrEmpty(newCategory.Description))
-                {
-                    var a = DateTime.UtcNow;
-                    var aa = DateTime.UtcNow.Date;
-                    var aaa = DateTime.Now;
-                    var aaaa = DateTime.Now.Date;
-
-                    res.Data = null;
-                    res.Success = false;
-                    res.Message = "Invalid Name/Description, please try again";
-                    return res;
-                }
-
-                //var exists = await CategoryContext.Categories.FirstOrDefaultAsync(c => c.Id == ) // implementar (GetUserId)
+                if (string.IsNullOrEmpty(newCategory.Name) || string.IsNullOrEmpty(newCategory.Description)) return res;
 
                 var category = Mapper.Map<Category>(newCategory);
                 res.Data = Mapper.Map<GetCategoryDto>(category);
@@ -51,20 +38,10 @@ namespace RentX.Services.Categories
             try
             {
                 var category = await CategoryContext.Categories.ToListAsync();
-
-                if (category is null)
-                {
-                    res.Data = null;
-                    res.Success = false;
-                    res.Message = "Category not found";
-                    return res;
-                }
-
                 res.Data = Mapper.Map<List<GetCategoryDto>>(category);
             }
             catch (Exception ex)
             {
-
                 res.Success = false;
                 res.Message = ex.Message;
             }
@@ -79,19 +56,12 @@ namespace RentX.Services.Categories
             {
                 var category = await CategoryContext.Categories.FirstOrDefaultAsync(cat => cat.Id == id);
 
-                if (category is null)
-                {
-                    res.Data = null;
-                    res.Success = false;
-                    res.Message = "Category not found";
-                    return res;
-                }
+                if (category is null) return res;
 
                 res.Data = Mapper.Map<GetCategoryDto>(category);
             }
             catch (Exception ex)
             {
-
                 res.Success = false;
                 res.Message = ex.Message;
             }
@@ -101,17 +71,12 @@ namespace RentX.Services.Categories
         public async Task<ServiceResponse<GetCategoryDto>> RemoveCategoryAsync(Guid id)
         {
             var res = new ServiceResponse<GetCategoryDto>();
+
             try
             {
                 var category = await CategoryContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
 
-                if (category is null)
-                {
-                    res.Data = null;
-                    res.Success = false;
-                    res.Message = "Category not found";
-                    return res;
-                }
+                if (category is null) return res;
 
                 CategoryContext.Remove(category);
                 await CategoryContext.SaveChangesAsync();
@@ -121,7 +86,6 @@ namespace RentX.Services.Categories
             }
             catch (Exception ex)
             {
-
                 res.Success = false;
                 res.Message = ex.Message;
             }
