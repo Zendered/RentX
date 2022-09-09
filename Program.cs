@@ -13,8 +13,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 var ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-//builder.Services.AddDbContext<DataContext>(option => option.UseSqlServer(ConnectionString));
-builder.Services.AddDbContext<DataContext>(option => option.UseInMemoryDatabase("rentxdb"));
+builder.Services.AddDbContext<DataContext>(option => option.UseSqlServer(ConnectionString));
+//builder.Services.AddDbContext<DataContext>(option => option.UseInMemoryDatabase("rentxdb"));
 
 var app = builder.Build();
 
@@ -25,7 +25,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//DatabaseManagementService.MigrationInitialisation(app);
+DatabaseManagementService.MigrationInitialisation(app);
 
 app.UseHttpsRedirection();
 

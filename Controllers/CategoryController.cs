@@ -42,5 +42,14 @@ namespace RentX.Controllers
                 Ok(res) :
                 BadRequest(res);
         }
+
+        [HttpDelete]
+        public async Task<ActionResult<ServiceResponse<GetCategoryDto>>> RemoveCategoryAsync(Guid id)
+        {
+            var res = await categoryService.RemoveCategoryAsync(id);
+            return res.Data is not null ?
+                Ok(res) :
+                BadRequest(res);
+        }
     }
 }

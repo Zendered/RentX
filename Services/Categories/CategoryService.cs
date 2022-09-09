@@ -97,5 +97,35 @@ namespace RentX.Services.Categories
             }
             return res;
         }
+
+        public async Task<ServiceResponse<GetCategoryDto>> RemoveCategoryAsync(Guid id)
+        {
+            var res = new ServiceResponse<GetCategoryDto>();
+            try
+            {
+                var category = await CategoryContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
+
+                if (category is null)
+                {
+                    res.Data = null;
+                    res.Success = false;
+                    res.Message = "Category not found";
+                    return res;
+                }
+
+                CategoryContext.Remove(category);
+                await CategoryContext.SaveChangesAsync();
+
+                res.Data = Mapper.Map<GetCategoryDto>(category);
+                res.Message = "Category deleted";
+            }
+            catch (Exception ex)
+            {
+
+                res.Success = false;
+                res.Message = ex.Message;
+            }
+            return res;
+        }
     }
 }
