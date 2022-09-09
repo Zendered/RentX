@@ -9,6 +9,7 @@ namespace RentX
         public AutoMapperProfille()
         {
             CreateMap<GetCategoryDto, Category>();
+            CreateMap<AddCategoryDto, Category>();
 
             CreateMap<Category, GetCategoryDto>();
         }

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RentX.Data;
-using RentX.Services.Category;
+using RentX.Services.Categories;
 
 var builder = WebApplication.CreateBuilder(args);
 

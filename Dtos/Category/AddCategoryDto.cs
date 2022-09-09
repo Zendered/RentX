@@ -1,6 +1,6 @@
 ﻿namespace RentX.Dtos.Category
 {
-    public class CreateCategoryDto
+    public class AddCategoryDto
     {
         public string ImageName { get; set; } = string.Empty;
     }

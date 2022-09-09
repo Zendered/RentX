@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RentX.Dtos.Category;
 using RentX.Models;
-using RentX.Services.Category;
+using RentX.Services.Categories;
 
 namespace RentX.Controllers
 {
@@ -16,11 +16,22 @@ namespace RentX.Controllers
             this.categoryService = categoryService;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<ServiceResponse<GetCategoryDto>>> GetCategoryById(GetCategoryDto category)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ServiceResponse<GetCategoryDto>>> GetCategoryById(Guid id)
         {
-            var res = await categoryService.GetCategoryByIdAsync(category);
-            return res is null ? Ok(res) : BadRequest(res);
+            var res = await categoryService.GetCategoryByIdAsync(id);
+            return res is not null ?
+                Ok(res) :
+                BadRequest(res);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ServiceResponse<GetCategoryDto>>> AddCategoryAsync(AddCategoryDto category)
+        {
+            var res = await categoryService.AddCategoryAsync(category);
+            return res is not null ?
+                Ok(res) :
+                BadRequest(res);
         }
     }
 }
