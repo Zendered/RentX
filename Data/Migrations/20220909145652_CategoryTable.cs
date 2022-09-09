@@ -8,9 +8,6 @@ namespace RentX.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Categories");
-
             migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
