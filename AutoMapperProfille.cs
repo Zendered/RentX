@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using RentX.Dtos.Car;
 using RentX.Dtos.Category;
-using RentX.Models;
 
 namespace RentX
 {
@@ -11,7 +11,12 @@ namespace RentX
             CreateMap<GetCategoryDto, Category>();
             CreateMap<AddCategoryDto, Category>();
 
+            CreateMap<GetCarDto, Car>();
+            CreateMap<AddCarDto, Car>();
+
             CreateMap<Category, GetCategoryDto>();
+
+            CreateMap<Car, GetCarDto>();
         }
     }
 }

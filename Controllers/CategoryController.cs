@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RentX.Dtos.Category;
 using RentX.Exceptions;
-using RentX.Models;
 using RentX.Services.Categories;
 
 namespace RentX.Controllers
@@ -34,13 +33,13 @@ namespace RentX.Controllers
         public async Task<ActionResult<ServiceResponse<GetCategoryDto>>> AddCategoryAsync(AddCategoryDto category)
         {
             var res = await categoryService.AddCategoryAsync(category);
+            var error = new ServiceResponseException<GetCategoryDto>(
+                null, "Invalid Name/Description, please try again"
+                );
+
             return res.Data is not null ?
                 Ok(res) :
-                BadRequest(
-                    new ServiceResponseException<GetCategoryDto>(
-                        null,
-                        "Invalid Name/Description, please try again")
-                    );
+                BadRequest(error);
         }
 
         [HttpGet("All categories")]

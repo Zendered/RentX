@@ -1,5 +1,7 @@
+global using RentX.Models;
 using Microsoft.EntityFrameworkCore;
 using RentX.Data;
+using RentX.Services.Cars;
 using RentX.Services.Categories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,8 +14,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICarService, CarService>();
 var ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-//builder.Services.AddDbContext<DataContext>(option => option.UseSqlServer(ConnectionString)); 
+//builder.Services.AddDbContext<DataContext>(option => option.UseSqlServer(ConnectionString));
 builder.Services.AddDbContext<DataContext>(option => option.UseInMemoryDatabase("rentxdb")); // Test Db 
 
 var app = builder.Build();
