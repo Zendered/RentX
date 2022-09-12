@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using RentX.Data;
 using RentX.Dtos.Car;
 
@@ -30,6 +31,7 @@ namespace RentX.Services.Cars
 
                 var car = mapper.Map<Car>(newCar);
                 res.Data = mapper.Map<GetCarDto>(car);
+                res.Message = "New car added";
 
                 carContext.Add(car);
                 await carContext.SaveChangesAsync();
@@ -42,19 +44,64 @@ namespace RentX.Services.Cars
             return res;
         }
 
-        public Task<ServiceResponse<List<GetCarDto>>> GetAllCarAsync()
+        public async Task<ServiceResponse<List<GetCarDto>>> GetAllCarAsync()
         {
-            throw new NotImplementedException();
+            var res = new ServiceResponse<List<GetCarDto>>();
+
+            try
+            {
+                var car = await carContext.Cars.ToListAsync();
+                res.Data = mapper.Map<List<GetCarDto>>(car);
+            }
+            catch (Exception ex)
+            {
+                res.Success = false;
+                res.Message = ex.Message;
+            }
+            return res;
         }
 
-        public Task<ServiceResponse<GetCarDto>> GetCarByIdAsync(Guid id)
+        public async Task<ServiceResponse<GetCarDto>> GetCarByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var res = new ServiceResponse<GetCarDto>();
+
+            try
+            {
+                var car = await carContext.Cars.FirstOrDefaultAsync(c => c.Id == id);
+
+                if (car is null) return res;
+
+                res.Data = mapper.Map<GetCarDto>(car);
+            }
+            catch (Exception ex)
+            {
+                res.Success = false;
+                res.Message = ex.Message;
+            }
+            return res;
         }
 
-        public Task<ServiceResponse<GetCarDto>> RemoveCarAsync(Guid id)
+        public async Task<ServiceResponse<GetCarDto>> RemoveCarAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var res = new ServiceResponse<GetCarDto>();
+
+            try
+            {
+                var car = await carContext.Cars.FirstOrDefaultAsync(c => c.Id == id);
+
+                if (car is null) return res;
+
+                carContext.Cars.Remove(car);
+                await carContext.SaveChangesAsync();
+
+                res.Data = mapper.Map<GetCarDto>(car);
+            }
+            catch (Exception ex)
+            {
+                res.Success = false;
+                res.Message = ex.Message;
+            }
+            return res;
         }
     }
 }
