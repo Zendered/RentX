@@ -47,8 +47,8 @@ namespace RentX.Controllers
         {
             var res = await categoryService.GetAllCategoriesAsync();
             return res.Success is false ?
-            Ok(res) :
-            BadRequest(res);
+             BadRequest(res) :
+            Ok(res);
         }
 
         [HttpDelete]

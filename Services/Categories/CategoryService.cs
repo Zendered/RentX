@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using RentX.Data;
 using RentX.Dtos.Category;
-using RentX.Models;
 
 namespace RentX.Services.Categories
 {
@@ -17,11 +16,15 @@ namespace RentX.Services.Categories
                 if (string.IsNullOrEmpty(newCategory.Name) || string.IsNullOrEmpty(newCategory.Description)) return res;
 
                 var category = Mapper.Map<Category>(newCategory);
-                res.Data = Mapper.Map<GetCategoryDto>(category);
-                res.Message = "Category created";
+                var exists = await CategoryContext.Categories.FirstOrDefaultAsync(c => c.Name == category.Name);
+
+                if (exists is not null) return res;
 
                 await CategoryContext.Categories.AddAsync(category);
                 await CategoryContext.SaveChangesAsync();
+
+                res.Data = Mapper.Map<GetCategoryDto>(category);
+                res.Message = "Category created";
             }
             catch (Exception ex)
             {
