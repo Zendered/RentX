@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using RentX.Data;
 using RentX.Services.Cars;
 using RentX.Services.Categories;
+using RentX.Services.Specifications;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICarService, CarService>();
+builder.Services.AddScoped<ISpeficicationService, SpeficicationService>();
 var ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 //builder.Services.AddDbContext<DataContext>(option => option.UseSqlServer(ConnectionString));
 builder.Services.AddDbContext<DataContext>(option => option.UseInMemoryDatabase("rentxdb")); // Test Db 
