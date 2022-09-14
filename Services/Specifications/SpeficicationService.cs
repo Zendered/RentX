@@ -26,21 +26,42 @@ namespace RentX.Services.Specifications
                 res.Message = "File uploaded successfully";
                 res.Data = null;
 
-                Console.WriteLine(res);
                 return res;
             }
             catch (Exception ex)
             {
-
                 res.Success = false;
                 res.Message = ex.Message;
             }
             return res;
         }
 
-        public Task<ServiceResponse<GetSpecificationDto>> GetSpecificationByIdAsync(Guid id)
+        public async Task<ServiceResponse<GetSpecificationDto>> AddSpecificationCSVFileAsync(IFormFile specificationFile)
         {
-            throw new NotImplementedException();
+            var res = new ServiceResponse<GetSpecificationDto>();
+
+            try
+            {
+                var currentFile = Directory.GetCurrentDirectory();
+
+                using (var file = File.Create("file.csv"))
+                {
+                    specificationFile.CopyTo(file);
+                    await file.FlushAsync();
+                }
+
+                res.Message = "File uploaded successfully";
+                res.Data = null;
+
+                Console.WriteLine(specificationFile);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                res.Success = false;
+                res.Message = ex.Message;
+            }
+            return res;
         }
     }
 }

@@ -20,5 +20,11 @@ namespace RentX.Controllers
         {
             return Ok(await speficicationService.AddSpecificationAsync(newSpecification));
         }
+
+        [HttpPost("Upload-CSV-File")]
+        public async Task<ActionResult<ServiceResponse<GetSpecificationDto>>> AddSpecificationCSVFile(IFormFile specificationFile)
+        {
+            return Ok(await speficicationService.AddSpecificationCSVFileAsync(specificationFile));
+        }
     }
 }
