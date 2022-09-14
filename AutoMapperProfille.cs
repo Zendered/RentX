@@ -11,6 +11,7 @@ namespace RentX
         {
             CreateMap<GetCategoryDto, Category>();
             CreateMap<AddCategoryDto, Category>();
+            CreateMap<AddCategoryDto, GetCategoryDto>();
 
             CreateMap<GetCarDto, Car>();
             CreateMap<AddCarDto, Car>();
