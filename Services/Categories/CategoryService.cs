@@ -1,38 +1,40 @@
 ﻿using AutoMapper;
+using CsvHelper;
 using Microsoft.EntityFrameworkCore;
 using RentX.Data;
 using RentX.Dtos.Category;
+using System.Globalization;
 
 namespace RentX.Services.Categories
 {
     public record CategoryService(DataContext CategoryContext, IMapper Mapper) : ICategoryService
     {
-        public async Task<ServiceResponse<GetCategoryDto>> AddCategoryAsync(AddCategoryDto newCategory)
-        {
-            var res = new ServiceResponse<GetCategoryDto>();
+        //public async Task<ServiceResponse<GetCategoryDto>> AddCategoryAsync(AddCategoryDto newCategory)
+        //{
+        //    var res = new ServiceResponse<GetCategoryDto>();
 
-            try
-            {
-                if (string.IsNullOrEmpty(newCategory.Name) || string.IsNullOrEmpty(newCategory.Description)) return res;
+        //    try
+        //    {
+        //        if (string.IsNullOrEmpty(newCategory.Name) || string.IsNullOrEmpty(newCategory.Description)) return res;
 
-                var category = Mapper.Map<Category>(newCategory);
-                var exists = await CategoryContext.Categories.FirstOrDefaultAsync(c => c.Name == category.Name);
+        //        var category = Mapper.Map<Category>(newCategory);
+        //        var exists = await CategoryContext.Categories.FirstOrDefaultAsync(c => c.Name == category.Name);
 
-                if (exists is not null) return res;
+        //        if (exists is not null) return res;
 
-                await CategoryContext.Categories.AddAsync(category);
-                await CategoryContext.SaveChangesAsync();
+        //        await CategoryContext.Categories.AddAsync(category);
+        //        await CategoryContext.SaveChangesAsync();
 
-                res.Data = Mapper.Map<GetCategoryDto>(category);
-                res.Message = "Category created";
-            }
-            catch (Exception ex)
-            {
-                res.Success = false;
-                res.Message = ex.Message;
-            }
-            return res;
-        }
+        //        res.Data = Mapper.Map<GetCategoryDto>(category);
+        //        res.Message = "Category created";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        res.Success = false;
+        //        res.Message = ex.Message;
+        //    }
+        //    return res;
+        //}
 
         public async Task<ServiceResponse<List<GetCategoryDto>>> GetAllCategoriesAsync()
         {
@@ -86,6 +88,85 @@ namespace RentX.Services.Categories
 
                 res.Data = Mapper.Map<GetCategoryDto>(category);
                 res.Message = "Category deleted";
+            }
+            catch (Exception ex)
+            {
+                res.Success = false;
+                res.Message = ex.Message;
+            }
+            return res;
+        }
+
+        public async Task<ServiceResponse<GetCategoryDto>> AddCategoryAsync(List<AddCategoryDto> newCategory)
+        {
+            var res = new ServiceResponse<GetCategoryDto>();
+
+            try
+            {
+                var category = Mapper.Map<List<GetCategoryDto>>(newCategory);
+                var currentFile = Directory.GetCurrentDirectory();
+
+                using (var writer = new StreamWriter($"{currentFile}/category.csv"))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    await csv.WriteRecordsAsync(category);
+                    await writer.FlushAsync();
+                }
+
+                res.Message = "File uploaded successfully";
+                res.Data = null;
+
+                return res;
+            }
+            catch (Exception ex)
+            {
+                res.Success = false;
+                res.Message = ex.Message;
+            }
+            return res;
+        }
+
+        public async Task<ServiceResponse<GetCategoryDto>> AddCategoryCSVFileAsync(IFormFile categoryFile)
+        {
+            var res = new ServiceResponse<GetCategoryDto>();
+
+            try
+            {
+                var currentFile = Directory.GetCurrentDirectory();
+
+                using (var file = File.Create("file.csv"))
+                {
+                    categoryFile.CopyTo(file);
+                    await file.FlushAsync();
+                }
+
+                res.Message = "File uploaded successfully";
+                res.Data = null;
+
+                return res;
+            }
+            catch (Exception ex)
+            {
+                res.Success = false;
+                res.Message = ex.Message;
+            }
+            return res;
+        }
+
+        public ServiceResponse<List<GetCategoryDto>> GetCategoryCSVFile(string fileName)
+        {
+            var res = new ServiceResponse<List<GetCategoryDto>>();
+            try
+            {
+                var currentFile = Directory.GetCurrentDirectory();
+
+                using (var reader = new StreamReader($"{currentFile}/{fileName}.csv"))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    var records = csv.GetRecords<GetCategoryDto>().ToList();
+                    res.Data = records;
+                    res.Message = "Success";
+                }
             }
             catch (Exception ex)
             {
