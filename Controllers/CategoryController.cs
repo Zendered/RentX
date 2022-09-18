@@ -63,5 +63,27 @@ namespace RentX.Controllers
                 Ok(res) :
                 BadRequest(error);
         }
+
+        [HttpPost("add-category-csv")]
+        public async Task<ActionResult<ServiceResponse<GetCategoryDto>>> UploadCSVFileAsync(IFormFile category)
+        {
+            var res = await categoryService.AddCategoryCSVFileAsync(category);
+            var error = new ServiceResponseException<GetCategoryDto>(
+                null, "Invalid Name/Description, please try again"
+                );
+
+            return Ok(res);
+        }
+
+        [HttpGet("get-category-csv")]
+        public async Task<ActionResult<ServiceResponse<GetCategoryDto>>> GetCategoryCSVFile(string fileName)
+        {
+            var res = categoryService.GetCategoryCSVFile(fileName);
+            var error = new ServiceResponseException<GetCategoryDto>(
+                null, "Invalid Name/Description, please try again"
+                );
+
+            return Ok(res);
+        }
     }
 }
