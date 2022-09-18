@@ -9,33 +9,6 @@ namespace RentX.Services.Categories
 {
     public record CategoryService(DataContext CategoryContext, IMapper Mapper) : ICategoryService
     {
-        //public async Task<ServiceResponse<GetCategoryDto>> AddCategoryAsync(AddCategoryDto newCategory)
-        //{
-        //    var res = new ServiceResponse<GetCategoryDto>();
-
-        //    try
-        //    {
-        //        if (string.IsNullOrEmpty(newCategory.Name) || string.IsNullOrEmpty(newCategory.Description)) return res;
-
-        //        var category = Mapper.Map<Category>(newCategory);
-        //        var exists = await CategoryContext.Categories.FirstOrDefaultAsync(c => c.Name == category.Name);
-
-        //        if (exists is not null) return res;
-
-        //        await CategoryContext.Categories.AddAsync(category);
-        //        await CategoryContext.SaveChangesAsync();
-
-        //        res.Data = Mapper.Map<GetCategoryDto>(category);
-        //        res.Message = "Category created";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        res.Success = false;
-        //        res.Message = ex.Message;
-        //    }
-        //    return res;
-        //}
-
         public async Task<ServiceResponse<List<GetCategoryDto>>> GetAllCategoriesAsync()
         {
             var res = new ServiceResponse<List<GetCategoryDto>>();
@@ -97,26 +70,24 @@ namespace RentX.Services.Categories
             return res;
         }
 
-        public async Task<ServiceResponse<GetCategoryDto>> AddCategoryAsync(List<AddCategoryDto> newCategory)
+        public async Task<ServiceResponse<GetCategoryDto>> AddCategoryAsync(AddCategoryDto newCategory)
         {
             var res = new ServiceResponse<GetCategoryDto>();
 
             try
             {
-                var category = Mapper.Map<List<GetCategoryDto>>(newCategory);
-                var currentFile = Directory.GetCurrentDirectory();
+                if (string.IsNullOrEmpty(newCategory.Name) || string.IsNullOrEmpty(newCategory.Description)) return res;
 
-                using (var writer = new StreamWriter($"{currentFile}/category.csv"))
-                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                {
-                    await csv.WriteRecordsAsync(category);
-                    await writer.FlushAsync();
-                }
+                var category = Mapper.Map<Category>(newCategory);
+                var exists = await CategoryContext.Categories.FirstOrDefaultAsync(c => c.Name == category.Name);
 
-                res.Message = "File uploaded successfully";
-                res.Data = null;
+                if (exists is not null) return res;
 
-                return res;
+                await CategoryContext.Categories.AddAsync(category);
+                await CategoryContext.SaveChangesAsync();
+
+                res.Data = Mapper.Map<GetCategoryDto>(category);
+                res.Message = "Category created";
             }
             catch (Exception ex)
             {
@@ -133,17 +104,26 @@ namespace RentX.Services.Categories
             try
             {
                 var currentFile = Directory.GetCurrentDirectory();
-
-                using (var file = File.Create("file.csv"))
+                using (var file = File.Create($"{DateTime.Now:dd-MM-yy:HH:mm:ss}-categoriesList.csv"))
                 {
                     categoryFile.CopyTo(file);
                     await file.FlushAsync();
                 }
 
-                res.Message = "File uploaded successfully";
-                res.Data = null;
+                using (var reader = new StreamReader($"{currentFile}/{DateTime.Now:dd-MM-yy:HH:mm:ss}-categoriesList.csv"))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    var records = csv.GetRecords<GetCategoryDto>().ToList();
+                    foreach (var record in records)
+                    {
+                        var category = Mapper.Map<Category>(record);
+                        await CategoryContext.Categories.AddAsync(category);
+                        await CategoryContext.SaveChangesAsync();
+                    }
+                }
 
-                return res;
+                res.Data = null;
+                res.Message = "File uploaded successfully";
             }
             catch (Exception ex)
             {
@@ -160,13 +140,11 @@ namespace RentX.Services.Categories
             {
                 var currentFile = Directory.GetCurrentDirectory();
 
-                using (var reader = new StreamReader($"{currentFile}/{fileName}.csv"))
-                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-                {
-                    var records = csv.GetRecords<GetCategoryDto>().ToList();
-                    res.Data = records;
-                    res.Message = "Success";
-                }
+                using var reader = new StreamReader($"{currentFile}/{fileName}.csv");
+                using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+                var records = csv.GetRecords<GetCategoryDto>().ToList();
+                res.Data = records;
+                res.Message = "Success";
             }
             catch (Exception ex)
             {
