@@ -8,6 +8,7 @@
 * [SQLServer](https://www.microsoft.com/pt-br/sql-server/sql-server-downloads)
 * [Jwt](https://jwt.io/)
 * [Swagger](https://swagger.io/)
+* [CsvHelper](https://joshclose.github.io/CsvHelper/)
 
 ## Como usar 🧑‍💻
 
