@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RentX.Dtos.Category;
 using RentX.Exceptions;
 using RentX.Services.Categories;
 
 namespace RentX.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
@@ -76,7 +78,7 @@ namespace RentX.Controllers
         }
 
         [HttpGet("get-category-csv")]
-        public async Task<ActionResult<ServiceResponse<GetCategoryDto>>> GetCategoryCSVFile(string fileName)
+        public ActionResult<ServiceResponse<GetCategoryDto>> GetCategoryCSVFile(string fileName)
         {
             var res = categoryService.GetCategoryCSVFile(fileName);
             var error = new ServiceResponseException<GetCategoryDto>(
