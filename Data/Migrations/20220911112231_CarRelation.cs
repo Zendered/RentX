@@ -8,21 +8,6 @@ namespace RentX.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Categories_Cars_CarId",
-                table: "Categories");
-
-            migrationBuilder.DropTable(
-                name: "Cars");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Categories_CarId",
-                table: "Categories");
-
-            migrationBuilder.DropColumn(
-                name: "CarId",
-                table: "Categories");
-
             migrationBuilder.CreateTable(
                     name: "Cars",
                     columns: table => new

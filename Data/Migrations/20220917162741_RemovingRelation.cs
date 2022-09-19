@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -20,6 +19,9 @@ namespace RentX.Migrations
             migrationBuilder.DropColumn(
                 name: "CarId",
                 table: "Categories");
+            migrationBuilder.DropColumn(
+                name: "Name",
+                table: "Users");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
