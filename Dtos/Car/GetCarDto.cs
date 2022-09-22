@@ -1,6 +1,4 @@
-﻿using RentX.Dtos.Category;
-
-namespace RentX.Dtos.Car
+﻿namespace RentX.Dtos.Car
 {
     public class GetCarDto
     {
@@ -12,7 +10,7 @@ namespace RentX.Dtos.Car
         public string LicensePlate { get; set; } = string.Empty;
         public int FineAmount { get; set; }
         public string Brand { get; set; } = string.Empty;
-        public ICollection<GetCategoryDto>? Categories { get; set; }
+        public Guid CategoryId { get; set; }
         public DateTime Created_At { get; set; } = DateTime.Now;
     }
 }
