@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RentX.Data;
 
@@ -11,9 +12,10 @@ using RentX.Data;
 namespace RentX.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220921191912_CarCategoryRelation")]
+    partial class CarCategoryRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,9 +36,6 @@ namespace RentX.Migrations
                     b.Property<string>("Brand")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Created_At")
                         .HasColumnType("datetime2");
@@ -61,8 +60,6 @@ namespace RentX.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.ToTable("Cars");
                 });
 
@@ -70,6 +67,9 @@ namespace RentX.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CarId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Created_At")
@@ -84,6 +84,8 @@ namespace RentX.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CarId");
 
                     b.ToTable("Categories");
                 });
@@ -124,18 +126,18 @@ namespace RentX.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("RentX.Models.Car", b =>
+            modelBuilder.Entity("RentX.Models.Category", b =>
                 {
-                    b.HasOne("RentX.Models.Category", null)
-                        .WithMany("Cars")
-                        .HasForeignKey("CategoryId")
+                    b.HasOne("RentX.Models.Car", null)
+                        .WithMany("Categories")
+                        .HasForeignKey("CarId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RentX.Models.Category", b =>
+            modelBuilder.Entity("RentX.Models.Car", b =>
                 {
-                    b.Navigation("Cars");
+                    b.Navigation("Categories");
                 });
 #pragma warning restore 612, 618
         }
