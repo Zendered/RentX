@@ -10,6 +10,7 @@
         public string LicensePlate { get; set; } = string.Empty;
         public int FineAmount { get; set; }
         public string Brand { get; set; } = string.Empty;
+        public Guid CategoryId { get; set; }
         public DateTime Created_At { get; set; } = DateTime.Now;
     }
 }
