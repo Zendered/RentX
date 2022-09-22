@@ -6,8 +6,22 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>ffe44991-3792-431b-b08b-a6221edc6584</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20220921191912_CarCategoryRelation.cs" />
+    <Compile Remove="Data\Migrations\20220921191912_CarCategoryRelation.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220921193946_CarCategoryRelation.cs" />
+    <Compile Remove="Data\Migrations\20220921193946_CarCategoryRelation.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="21-09-22195911-categoriesList.csv" />
+    <None Remove="21-09-22200439-categoriesList.csv" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
@@ -25,6 +39,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.5" />
   </ItemGroup>
 
