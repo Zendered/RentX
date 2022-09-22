@@ -8,6 +8,7 @@ using RentX.Services.Authentication;
 using RentX.Services.Cars;
 using RentX.Services.Categories;
 using Swashbuckle.AspNetCore.Filters;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,21 +17,37 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddSwaggerGen(config =>
 {
-    c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    config.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     {
         Description = "Standard Authorization header using the Bearer scheme, e.g \" Bearer {token} \"",
         In = ParameterLocation.Header,
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey
     });
-    c.OperationFilter<SecurityRequirementsOperationFilter>();
+    config.OperationFilter<SecurityRequirementsOperationFilter>();
+    config.EnableAnnotations();
+
+    config.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "RentX",
+        Version = "v1",
+        Description = "Rent for cars API"
+    });
+
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    config.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
+
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+//builder.Services.AddScoped<ISpeficicationService, SpeficicationService>();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(opt =>
     {
@@ -43,9 +60,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false
         };
     });
-//builder.Services.AddScoped<ISpeficicationService, SpeficicationService>();
+
 //var ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 //builder.Services.AddDbContext<DataContext>(option => option.UseSqlServer(ConnectionString));
+
 builder.Services.AddDbContext<DataContext>(option => option.UseInMemoryDatabase("rentxdb")); // Test Db 
 
 var app = builder.Build();
