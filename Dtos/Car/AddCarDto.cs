@@ -1,6 +1,6 @@
 ﻿namespace RentX.Dtos.Car
 {
-    public class AddCarDto
+    public record AddCarDto
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;

@@ -1,6 +1,6 @@
 ﻿namespace RentX.Dtos.Car
 {
-    public class GetCarDto
+    public record GetCarDto
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; } = string.Empty;

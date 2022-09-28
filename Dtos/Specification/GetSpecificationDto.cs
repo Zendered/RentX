@@ -1,6 +1,6 @@
 ﻿namespace RentX.Dtos.Specification
 {
-    public class GetSpecificationDto
+    public record GetSpecificationDto
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; } = string.Empty;
