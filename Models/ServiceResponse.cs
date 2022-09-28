@@ -1,6 +1,6 @@
 ﻿namespace RentX.Models
 {
-    public class ServiceResponse<T>
+    public record ServiceResponse<T>
     {
         public T? Data { get; set; }
         public bool Success { get; set; } = true;
