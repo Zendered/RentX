@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RentX.Data;
 
@@ -11,9 +12,10 @@ using RentX.Data;
 namespace RentX.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220927212524_CarCategoryDataSeeding")]
+    partial class CarCategoryDataSeeding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +23,6 @@ namespace RentX.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("CarSpecification", b =>
-                {
-                    b.Property<Guid>("CarsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SpecificationsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("CarsId", "SpecificationsId");
-
-                    b.HasIndex("SpecificationsId");
-
-                    b.ToTable("CarSpecification");
-                });
 
             modelBuilder.Entity("RentX.Models.Car", b =>
                 {
@@ -87,7 +74,7 @@ namespace RentX.Data.Migrations
                             Available = true,
                             Brand = "Audi",
                             CategoryId = new Guid("ef354c3c-1a03-4003-971a-1d2af188d6c2"),
-                            Created_At = new DateTime(2022, 9, 27, 20, 58, 7, 534, DateTimeKind.Local).AddTicks(1478),
+                            Created_At = new DateTime(2022, 9, 27, 18, 25, 24, 547, DateTimeKind.Local).AddTicks(4917),
                             Daily_Rate = 140,
                             Description = "O Audi A3 Sedan impressiona com o seu \r\n                        exterior esportivo e elegante. Progresso que se pode sentir.",
                             FineAmount = 100,
@@ -100,7 +87,7 @@ namespace RentX.Data.Migrations
                             Available = true,
                             Brand = "Nissan",
                             CategoryId = new Guid("381f85b0-9810-4331-a69d-d62733cc20ae"),
-                            Created_At = new DateTime(2022, 9, 27, 20, 58, 7, 534, DateTimeKind.Local).AddTicks(1534),
+                            Created_At = new DateTime(2022, 9, 27, 18, 25, 24, 547, DateTimeKind.Local).AddTicks(4973),
                             Daily_Rate = 100,
                             Description = "O Nissan Versa Sedan impressiona com o seu \r\n                        exterior esportivo e elegante. Progresso que se pode sentir.",
                             FineAmount = 40,
@@ -113,7 +100,7 @@ namespace RentX.Data.Migrations
                             Available = true,
                             Brand = "Toyota",
                             CategoryId = new Guid("2089f4ab-9007-422e-9c9e-87b583423a4e"),
-                            Created_At = new DateTime(2022, 9, 27, 20, 58, 7, 534, DateTimeKind.Local).AddTicks(1558),
+                            Created_At = new DateTime(2022, 9, 27, 18, 25, 24, 547, DateTimeKind.Local).AddTicks(4997),
                             Daily_Rate = 200,
                             Description = "O Corolla gli Sedan impressiona com o seu \r\n                        exterior esportivo e elegante. Progresso que se pode sentir.",
                             FineAmount = 140,
@@ -126,7 +113,7 @@ namespace RentX.Data.Migrations
                             Available = true,
                             Brand = "Hyundai",
                             CategoryId = new Guid("8a435f5f-c880-47e5-85a3-0d0451907aa8"),
-                            Created_At = new DateTime(2022, 9, 27, 20, 58, 7, 534, DateTimeKind.Local).AddTicks(1583),
+                            Created_At = new DateTime(2022, 9, 27, 18, 25, 24, 547, DateTimeKind.Local).AddTicks(5023),
                             Daily_Rate = 120,
                             Description = "O HB20 Sedan impressiona com o seu \r\n                        exterior esportivo e elegante. Progresso que se pode sentir.",
                             FineAmount = 80,
@@ -160,53 +147,31 @@ namespace RentX.Data.Migrations
                         new
                         {
                             Id = new Guid("ef354c3c-1a03-4003-971a-1d2af188d6c2"),
-                            Created_At = new DateTime(2022, 9, 27, 20, 58, 7, 534, DateTimeKind.Local).AddTicks(1822),
+                            Created_At = new DateTime(2022, 9, 27, 18, 25, 24, 547, DateTimeKind.Local).AddTicks(5153),
                             Description = "4 portas, teto solar",
                             Name = "esportivo"
                         },
                         new
                         {
                             Id = new Guid("381f85b0-9810-4331-a69d-d62733cc20ae"),
-                            Created_At = new DateTime(2022, 9, 27, 20, 58, 7, 534, DateTimeKind.Local).AddTicks(1847),
+                            Created_At = new DateTime(2022, 9, 27, 18, 25, 24, 547, DateTimeKind.Local).AddTicks(5176),
                             Description = "Carro para momentos mais radicais",
                             Name = "suv"
                         },
                         new
                         {
                             Id = new Guid("2089f4ab-9007-422e-9c9e-87b583423a4e"),
-                            Created_At = new DateTime(2022, 9, 27, 20, 58, 7, 534, DateTimeKind.Local).AddTicks(1869),
+                            Created_At = new DateTime(2022, 9, 27, 18, 25, 24, 547, DateTimeKind.Local).AddTicks(5197),
                             Description = "Carro para momentos mais radicais",
                             Name = "suv"
                         },
                         new
                         {
                             Id = new Guid("8a435f5f-c880-47e5-85a3-0d0451907aa8"),
-                            Created_At = new DateTime(2022, 9, 27, 20, 58, 7, 534, DateTimeKind.Local).AddTicks(1893),
+                            Created_At = new DateTime(2022, 9, 27, 18, 25, 24, 547, DateTimeKind.Local).AddTicks(5218),
                             Description = "perfeito para a familia",
                             Name = "esportivo"
                         });
-                });
-
-            modelBuilder.Entity("RentX.Models.Specification", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Created_At")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Specifications");
                 });
 
             modelBuilder.Entity("RentX.Models.User", b =>
@@ -243,21 +208,6 @@ namespace RentX.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("CarSpecification", b =>
-                {
-                    b.HasOne("RentX.Models.Car", null)
-                        .WithMany()
-                        .HasForeignKey("CarsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RentX.Models.Specification", null)
-                        .WithMany()
-                        .HasForeignKey("SpecificationsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("RentX.Models.Car", b =>

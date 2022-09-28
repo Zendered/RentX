@@ -9,7 +9,7 @@ namespace RentX.Data
             using var serviceScope = app.ApplicationServices.CreateScope();
             var serviceDb = serviceScope.ServiceProvider.GetService<DataContext>();
 
-            serviceDb.Database.Migrate();
+            serviceDb?.Database.Migrate();
         }
     }
 }

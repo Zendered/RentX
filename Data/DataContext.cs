@@ -7,10 +7,9 @@ namespace RentX.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Car> Cars { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Specification> Specifications { get; set; }
 
-        public DataContext(DbContextOptions<DataContext> options) : base(options)
-        {
-        }
+        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -69,6 +68,36 @@ namespace RentX.Data
                     FineAmount = 80,
                     Brand = "Hyundai",
                     CategoryId = Guid.Parse("8a435f5f-c880-47e5-85a3-0d0451907aa8")
+                }
+                );
+
+            modelBuilder.Entity<Category>().HasData(
+                new Category()
+                {
+                    Id = Guid.Parse("ef354c3c-1a03-4003-971a-1d2af188d6c2"),
+                    Name = "esportivo",
+                    Description = "4 portas, teto solar",
+                },
+
+                new Category()
+                {
+                    Id = Guid.Parse("381f85b0-9810-4331-a69d-d62733cc20ae"),
+                    Name = "suv",
+                    Description = "Carro para momentos mais radicais",
+                },
+
+                new Category()
+                {
+                    Id = Guid.Parse("2089f4ab-9007-422e-9c9e-87b583423a4e"),
+                    Name = "suv",
+                    Description = "Carro para momentos mais radicais",
+                },
+
+                new Category()
+                {
+                    Id = Guid.Parse("8a435f5f-c880-47e5-85a3-0d0451907aa8"),
+                    Name = "esportivo",
+                    Description = "perfeito para a familia",
                 }
                 );
         }
