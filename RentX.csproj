@@ -12,18 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Data\Migrations\20220921191912_CarCategoryRelation.cs" />
-    <Compile Remove="Data\Migrations\20220921191912_CarCategoryRelation.Designer.cs" />
-    <Compile Remove="Data\Migrations\20220921193946_CarCategoryRelation.cs" />
-    <Compile Remove="Data\Migrations\20220921193946_CarCategoryRelation.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="21-09-22195911-categoriesList.csv" />
-    <None Remove="21-09-22200439-categoriesList.csv" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="CsvHelper" Version="28.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />

@@ -7,6 +7,7 @@ using RentX.Data;
 using RentX.Services.Authentication;
 using RentX.Services.Cars;
 using RentX.Services.Categories;
+using RentX.Services.Specifications;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 
@@ -41,12 +42,16 @@ builder.Services.AddSwaggerGen(config =>
 });
 
 builder.Services.AddHttpContextAccessor();
+var config = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.Development", true)
+    .AddUserSecrets(typeof(Program).Assembly, true)
+    .Build();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-//builder.Services.AddScoped<ISpeficicationService, SpeficicationService>();
+builder.Services.AddScoped<ISpeficicationService, SpeficicationService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(opt =>
@@ -55,16 +60,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8
-            .GetBytes(builder.Configuration["AppSettings:Token"])),
+            .GetBytes(config["AppSettings:Token"])),
             ValidateIssuer = false,
             ValidateAudience = false
         };
     });
 
-//var ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+//var ConnectionString = config["ConnectionStrings:DefaultConnection"];
 //builder.Services.AddDbContext<DataContext>(option => option.UseSqlServer(ConnectionString));
 
-builder.Services.AddDbContext<DataContext>(option => option.UseInMemoryDatabase("rentxdb")); // Test Db 
+builder.Services
+    .AddDbContext<DataContext>(
+    option =>
+    option.UseInMemoryDatabase("rentxdb")); // Test Db 
 
 var app = builder.Build();
 
