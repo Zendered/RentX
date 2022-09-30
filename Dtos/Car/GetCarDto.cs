@@ -1,4 +1,6 @@
-﻿namespace RentX.Dtos.Car
+﻿using RentX.Dtos.Specification;
+
+namespace RentX.Dtos.Car
 {
     public record GetCarDto
     {
@@ -10,6 +12,7 @@
         public string LicensePlate { get; set; } = string.Empty;
         public int FineAmount { get; set; }
         public string Brand { get; set; } = string.Empty;
+        public IList<GetSpecificationDto> Specifications { get; set; } = new List<GetSpecificationDto>();
         public Guid CategoryId { get; set; }
         public DateTime Created_At { get; set; } = DateTime.Now;
     }
