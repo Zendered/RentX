@@ -10,11 +10,13 @@ namespace RentX.Services.Authentication
     {
         private readonly DataContext context;
         private readonly IConfiguration config;
+        private readonly IHttpContextAccessor contextAccessor;
 
-        public AuthenticationService(DataContext context, IConfiguration config)
+        public AuthenticationService(DataContext context, IConfiguration config, IHttpContextAccessor contextAccessor)
         {
             this.context = context;
             this.config = config;
+            this.contextAccessor = contextAccessor;
         }
 
         public async Task<ServiceResponse<string>> Login(string userName, string password)
@@ -118,5 +120,11 @@ namespace RentX.Services.Authentication
 
             return tokenHandler.WriteToken(token);
         }
+
+        public Guid GetUserId() => Guid.Parse(
+            contextAccessor?.HttpContext?.User
+            .FindFirstValue(ClaimTypes.NameIdentifier)
+            ?? throw new ArgumentException()
+            );
     }
 }

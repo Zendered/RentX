@@ -68,6 +68,44 @@ namespace RentX.Services.Cars
             return res;
         }
 
+        public async Task<ServiceResponse<GetCarDto>> AddSpecificationAsync(Guid carId, Guid carSpecificationId)
+        {
+            var res = new ServiceResponse<GetCarDto>();
+
+            try
+            {
+                var carExists = await carContext.Cars.FindAsync(carId);
+                if (carExists is null)
+                {
+                    res.Message = "Car not found";
+                    res.Success = false;
+                    return res;
+                }
+
+                var specificationExists = await carContext.Specifications.FindAsync(carSpecificationId);
+                if (specificationExists is null)
+                {
+                    res.Message = "Specification not found";
+                    res.Success = false;
+                    return res;
+                }
+
+                carExists.Specifications.Add(specificationExists);
+                carContext.SaveChanges();
+                var returnCar = mapper.Map<GetCarDto>(carExists);
+
+                res.Data = returnCar;
+                res.Message = "Specification added";
+            }
+            catch (Exception ex)
+            {
+                res.Success = false;
+                res.Data = null;
+                res.Message = ex.Message;
+            }
+            return res;
+        }
+
         public async Task<ServiceResponse<GetCarDto>> GetCarByIdAsync(Guid id)
         {
             var res = new ServiceResponse<GetCarDto>();
@@ -96,8 +134,30 @@ namespace RentX.Services.Cars
             return res;
         }
 
+        // REMOVER DEPOIS DE TODOS OS TESTES
+        public async Task<ServiceResponse<List<GetCarDto>>> GetAllCarsAsync()
+        {
+            var res = new ServiceResponse<List<GetCarDto>>();
+
+            try
+            {
+                var cars = await carContext.Cars
+                    .Include(s => s.Specifications)
+                    .ToListAsync();
+
+                res.Data = mapper.Map<List<GetCarDto>>(cars);
+                res.Message = "Success";
+            }
+            catch (Exception ex)
+            {
+                res.Success = false;
+                res.Message = ex.Message;
+            }
+            return res;
+        }
+
         // Get all car available by category id
-        public async Task<ServiceResponse<List<GetCarDto>>> GetAllCarsAvailableAsync(Guid? categoryId)
+        public ServiceResponse<List<GetCarDto>> GetAllCarsAvailableAsync(Guid? categoryId)
         {
             var res = new ServiceResponse<List<GetCarDto>>();
 
@@ -112,9 +172,12 @@ namespace RentX.Services.Cars
                     return res;
                 }
 
-                var car = carContext.Cars.Where(b => b.Available == true).Where(c => c.CategoryId == categoryId);
+                var car = carContext.Cars
+                    .Include(s => s.Specifications)
+                    .Where(c => c.CategoryId == categoryId)
+                    .Where(b => b.Available == true);
 
-                if (car.Count() == 0)
+                if (!car.Any())
                 {
                     res.Message = "There is no cars with this category id";
                     return res;
@@ -132,7 +195,7 @@ namespace RentX.Services.Cars
         }
 
         // Get all car available by his brand
-        public async Task<ServiceResponse<List<GetCarDto>>> GetAllCarsAvailableAsync(string? brand)
+        public ServiceResponse<List<GetCarDto>> GetAllCarsAvailableAsync(string? brand)
         {
             var res = new ServiceResponse<List<GetCarDto>>();
 
@@ -147,9 +210,12 @@ namespace RentX.Services.Cars
                     return res;
                 }
 
-                var car = carContext.Cars.Where(b => b.Available == true).Where(c => c.Brand == brand);
+                var car = carContext.Cars
+                    .Include(s => s.Specifications)
+                    .Where(b => b.Available == true)
+                    .Where(c => c.Brand == brand);
 
-                if (car.Count() == 0)
+                if (!car.Any())
                 {
                     res.Data = null;
                     res.Message = "There is no cars with this brand";
@@ -206,6 +272,7 @@ namespace RentX.Services.Cars
             }
             return res;
         }
+
         //public async Task<ServiceResponse<List<GetCarDto>>> GetAllCarsAvailableAsync(string? name)
         //{
         //    var res = new ServiceResponse<List<GetCarDto>>();

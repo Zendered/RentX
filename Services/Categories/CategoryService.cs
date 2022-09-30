@@ -3,6 +3,7 @@ using CsvHelper;
 using Microsoft.EntityFrameworkCore;
 using RentX.Data;
 using RentX.Dtos.Category;
+using RentX.Tools.IsValidData;
 using System.Globalization;
 
 namespace RentX.Services.Categories
@@ -15,11 +16,9 @@ namespace RentX.Services.Categories
 
             try
             {
-                var isParamterInvalid =
-                    string.IsNullOrWhiteSpace(newCategory.Name) ||
-                    string.IsNullOrWhiteSpace(newCategory.Description);
+                bool invalidData = IsValidData.IsValid(newCategory.Name, newCategory.Description);
 
-                if (isParamterInvalid)
+                if (invalidData)
                 {
                     res.Success = false;
                     res.Data = null;
@@ -105,27 +104,6 @@ namespace RentX.Services.Categories
                 };
 
                 res.Data = Mapper.Map<GetCategoryDto>(category);
-                res.Message = "Success";
-            }
-            catch (Exception ex)
-            {
-                res.Success = false;
-                res.Message = ex.Message;
-            }
-            return res;
-        }
-
-        public ServiceResponse<List<GetCategoryDto>> GetCategoryCSVFile(string fileName)
-        {
-            var res = new ServiceResponse<List<GetCategoryDto>>();
-            try
-            {
-                var currentFile = Directory.GetCurrentDirectory();
-
-                using var reader = new StreamReader($"{currentFile}/{fileName}.csv");
-                using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-                var records = csv.GetRecords<GetCategoryDto>().ToList();
-                res.Data = records;
                 res.Message = "Success";
             }
             catch (Exception ex)

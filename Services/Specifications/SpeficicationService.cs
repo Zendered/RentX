@@ -1,60 +1,53 @@
 ﻿using AutoMapper;
-using CsvHelper;
+using RentX.Data;
 using RentX.Dtos.Specification;
-using System.Globalization;
+using RentX.Tools.IsValidData;
 
 namespace RentX.Services.Specifications
 {
-    public record SpeficicationService(IMapper Mapper) : ISpeficicationService
+    public class SpeficicationService : ISpeficicationService
     {
-        public async Task<ServiceResponse<GetSpecificationDto>> AddSpecificationAsync(List<AddSpecificationDto> newSpecification)
+        private readonly DataContext ctx;
+        private readonly IMapper mapper;
+
+        public SpeficicationService(DataContext ctx, IMapper mapper)
         {
-            var res = new ServiceResponse<GetSpecificationDto>();
-
-            try
-            {
-                var specification = Mapper.Map<List<Specification>>(newSpecification);
-                var currentFile = Directory.GetCurrentDirectory();
-
-                using (var writer = new StreamWriter($"{currentFile}/specification.csv"))
-                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                {
-                    await csv.WriteRecordsAsync(specification);
-                    await writer.FlushAsync();
-                }
-
-                res.Message = "File uploaded successfully";
-                res.Data = null;
-
-                return res;
-            }
-            catch (Exception ex)
-            {
-                res.Success = false;
-                res.Message = ex.Message;
-            }
-            return res;
+            this.ctx = ctx;
+            this.mapper = mapper;
         }
 
-        public async Task<ServiceResponse<GetSpecificationDto>> AddSpecificationCSVFileAsync(IFormFile specificationFile)
+        public ServiceResponse<GetSpecificationDto> AddSpecificationAsync(AddSpecificationDto newSpecification)
         {
             var res = new ServiceResponse<GetSpecificationDto>();
 
             try
             {
-                var currentFile = Directory.GetCurrentDirectory();
-
-                using (var file = File.Create("file.csv"))
+                bool invalidData = IsValidData.IsValid(newSpecification.Name, newSpecification.Description);
+                if (invalidData)
                 {
-                    specificationFile.CopyTo(file);
-                    await file.FlushAsync();
+                    res.Data = null;
+                    res.Message = "Invalid Name/Description, please try again";
+                    return res;
                 }
 
-                res.Message = "File uploaded successfully";
-                res.Data = null;
+                var specification = mapper.Map<Specification>(newSpecification);
+                var exists = ctx.Specifications.Any(spec => spec.Name == specification.Name);
 
-                Console.WriteLine(specificationFile);
-                return res;
+                if (exists)
+                {
+                    res.Data = null;
+                    res.Message = "That specification already exists";
+                    return res;
+                }
+
+                ctx.Specifications.Add(specification);
+                ctx.SaveChanges();
+
+                var getSpecification = ctx.Specifications.Find(specification.Id);
+                var returnSpecification = mapper.Map<GetSpecificationDto>(getSpecification);
+
+                res.Message = "Specification created";
+                res.Data = returnSpecification;
             }
             catch (Exception ex)
             {
@@ -65,3 +58,4 @@ namespace RentX.Services.Specifications
         }
     }
 }
+
