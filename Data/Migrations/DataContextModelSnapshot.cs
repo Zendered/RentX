@@ -79,60 +79,6 @@ namespace RentX.Data.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Cars");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("b55a6ed3-2837-4127-965f-b375af07c3e4"),
-                            Available = true,
-                            Brand = "Audi",
-                            CategoryId = new Guid("ef354c3c-1a03-4003-971a-1d2af188d6c2"),
-                            Created_At = new DateTime(2022, 9, 27, 20, 58, 7, 534, DateTimeKind.Local).AddTicks(1478),
-                            Daily_Rate = 140,
-                            Description = "O Audi A3 Sedan impressiona com o seu \r\n                        exterior esportivo e elegante. Progresso que se pode sentir.",
-                            FineAmount = 100,
-                            LicensePlate = "ABC 123A",
-                            Name = "Audi A3"
-                        },
-                        new
-                        {
-                            Id = new Guid("c79dd509-55fc-4b14-86e2-73dd5f98dc26"),
-                            Available = true,
-                            Brand = "Nissan",
-                            CategoryId = new Guid("381f85b0-9810-4331-a69d-d62733cc20ae"),
-                            Created_At = new DateTime(2022, 9, 27, 20, 58, 7, 534, DateTimeKind.Local).AddTicks(1534),
-                            Daily_Rate = 100,
-                            Description = "O Nissan Versa Sedan impressiona com o seu \r\n                        exterior esportivo e elegante. Progresso que se pode sentir.",
-                            FineAmount = 40,
-                            LicensePlate = "ABC 123B",
-                            Name = "Versa"
-                        },
-                        new
-                        {
-                            Id = new Guid("6c090713-ff4e-46f2-9e20-f3a49f5ac3bc"),
-                            Available = true,
-                            Brand = "Toyota",
-                            CategoryId = new Guid("2089f4ab-9007-422e-9c9e-87b583423a4e"),
-                            Created_At = new DateTime(2022, 9, 27, 20, 58, 7, 534, DateTimeKind.Local).AddTicks(1558),
-                            Daily_Rate = 200,
-                            Description = "O Corolla gli Sedan impressiona com o seu \r\n                        exterior esportivo e elegante. Progresso que se pode sentir.",
-                            FineAmount = 140,
-                            LicensePlate = "ABC 123C",
-                            Name = "Corolla"
-                        },
-                        new
-                        {
-                            Id = new Guid("0defbea5-f8c9-47c5-801b-8d2269001dc0"),
-                            Available = true,
-                            Brand = "Hyundai",
-                            CategoryId = new Guid("8a435f5f-c880-47e5-85a3-0d0451907aa8"),
-                            Created_At = new DateTime(2022, 9, 27, 20, 58, 7, 534, DateTimeKind.Local).AddTicks(1583),
-                            Daily_Rate = 120,
-                            Description = "O HB20 Sedan impressiona com o seu \r\n                        exterior esportivo e elegante. Progresso que se pode sentir.",
-                            FineAmount = 80,
-                            LicensePlate = "ABC 123D",
-                            Name = "HB20"
-                        });
                 });
 
             modelBuilder.Entity("RentX.Models.Category", b =>
@@ -155,36 +101,6 @@ namespace RentX.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("ef354c3c-1a03-4003-971a-1d2af188d6c2"),
-                            Created_At = new DateTime(2022, 9, 27, 20, 58, 7, 534, DateTimeKind.Local).AddTicks(1822),
-                            Description = "4 portas, teto solar",
-                            Name = "esportivo"
-                        },
-                        new
-                        {
-                            Id = new Guid("381f85b0-9810-4331-a69d-d62733cc20ae"),
-                            Created_At = new DateTime(2022, 9, 27, 20, 58, 7, 534, DateTimeKind.Local).AddTicks(1847),
-                            Description = "Carro para momentos mais radicais",
-                            Name = "suv"
-                        },
-                        new
-                        {
-                            Id = new Guid("2089f4ab-9007-422e-9c9e-87b583423a4e"),
-                            Created_At = new DateTime(2022, 9, 27, 20, 58, 7, 534, DateTimeKind.Local).AddTicks(1869),
-                            Description = "Carro para momentos mais radicais",
-                            Name = "suv"
-                        },
-                        new
-                        {
-                            Id = new Guid("8a435f5f-c880-47e5-85a3-0d0451907aa8"),
-                            Created_At = new DateTime(2022, 9, 27, 20, 58, 7, 534, DateTimeKind.Local).AddTicks(1893),
-                            Description = "perfeito para a familia",
-                            Name = "esportivo"
-                        });
                 });
 
             modelBuilder.Entity("RentX.Models.Specification", b =>
