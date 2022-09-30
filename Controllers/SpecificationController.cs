@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RentX.Dtos.Specification;
 using RentX.Services.Specifications;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace RentX.Controllers
 {
@@ -15,16 +16,21 @@ namespace RentX.Controllers
             this.speficicationService = speficicationService;
         }
 
+        #region AddSpecificationAsync
+        [SwaggerOperation(Summary = "Add a new specification", Description = "it's necessary to be logged in")]
+        [SwaggerResponse(201, "New specification created")]
+        [SwaggerResponse(400, "Invalid Name/Description, please try again", typeof(ServiceResponse<string>))]
+        [SwaggerResponse(202, "That specification already exists", typeof(ServiceResponse<string>))]
         [HttpPost]
-        public async Task<ActionResult<ServiceResponse<GetSpecificationDto>>> AddCSVSpecification(List<AddSpecificationDto> newSpecification)
+        public ActionResult<ServiceResponse<GetSpecificationDto>> AddSpecificationAsync(AddSpecificationDto newSpecification)
         {
-            return Ok(await speficicationService.AddSpecificationAsync(newSpecification));
-        }
+            var res = speficicationService.AddSpecificationAsync(newSpecification);
 
-        [HttpPost("Upload-CSV-File")]
-        public async Task<ActionResult<ServiceResponse<GetSpecificationDto>>> AddSpecificationCSVFile(IFormFile specificationFile)
-        {
-            return Ok(await speficicationService.AddSpecificationCSVFileAsync(specificationFile));
+            if (res.Message.Contains("Invalid Name/Description, please try again")) return BadRequest(res);
+            if (res.Message.Contains("That specification already exists")) return Accepted(res);
+
+            return res.Success is true ? Ok(res) : BadRequest(res);
         }
+        #endregion
     }
 }

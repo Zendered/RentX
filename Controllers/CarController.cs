@@ -18,6 +18,14 @@ namespace RentX.Controllers
             this.carService = carService;
         }
 
+        [HttpGet("allcars")]
+        public async Task<ActionResult<ServiceResponse<List<GetCarDto>>>> GetAllCarsAsync()
+        {
+            var res = await carService.GetAllCarsAsync();
+
+            return res.Data is not null ? Ok(res) : BadRequest(res);
+        }
+
         #region AddCar
         [SwaggerOperation(Summary = "Add a new car", Description = "it's necessary to be logged in")]
         [SwaggerResponse(201, "New car added", typeof(ServiceResponse<GetCarDto>))]
@@ -39,6 +47,25 @@ namespace RentX.Controllers
             }
 
             return res.Data is not null ? CreatedAtAction(nameof(GetCarById), new { CarId = res.Data.Id }, res) : BadRequest(res);
+        }
+        #endregion
+
+        #region AddSpecification
+        [SwaggerOperation(Summary = "Add car specification", Description = "it's necessary to be logged in")]
+        [SwaggerResponse(201, "Specification added", typeof(ServiceResponse<GetCarDto>))]
+        [SwaggerResponse(404, "car not found/Specification not found", typeof(ServiceResponse<string>))]
+        [HttpPost("{carId}")]
+        public async Task<ActionResult<ServiceResponse<GetCarDto>>> AddSpecificationAsync(Guid carId, [FromForm] Guid carSpecificationId)
+        {
+            var res = await carService.AddSpecificationAsync(carId, carSpecificationId);
+
+            if (res.Message.Contains("Car not found") ||
+                res.Message.Contains("Specification not found"))
+                return NotFound(res);
+
+            return res.Data is not null ?
+                CreatedAtAction(nameof(GetCarById), new { CarId = res.Data.Id }, res) :
+                BadRequest(res);
         }
         #endregion
 
@@ -64,10 +91,10 @@ namespace RentX.Controllers
         [SwaggerOperation(Summary = "Get a car by his id", Description = "it's necessary to be logged in")]
         [SwaggerResponse(204, "There is no cars available right now", typeof(ServiceResponse<GetCarDto>))]
         [SwaggerResponse(404, "There is no cars with this category id", typeof(ServiceResponse<string>))]
-        [HttpGet("available/{categoryId}")]
-        public async Task<ActionResult<ServiceResponse<GetCarDto>>> GetAvailableByIdCars(Guid categoryId)
+        [HttpGet("available-by-id/{categoryId}")]
+        public ActionResult<ServiceResponse<GetCarDto>> GetAvailableByIdCars(Guid categoryId)
         {
-            var res = await carService.GetAllCarsAvailableAsync(categoryId);
+            var res = carService.GetAllCarsAvailableAsync(categoryId);
 
             if (res.Message.Contains("There is no cars available right now"))
             {
@@ -87,10 +114,10 @@ namespace RentX.Controllers
         [SwaggerOperation(Summary = "Get a car by his brand", Description = "it's necessary to be logged in")]
         [SwaggerResponse(204, "There is no cars available right now")]
         [SwaggerResponse(404, "There is no cars with this brand", typeof(ServiceResponse<string>))]
-        [HttpGet("available/brand")]
-        public async Task<ActionResult<ServiceResponse<GetCarDto>>> GetAvailableByBrandCars(string brand)
+        [HttpGet("available-by-brand/{brand}")]
+        public ActionResult<ServiceResponse<GetCarDto>> GetAvailableByBrandCars(string brand)
         {
-            var res = await carService.GetAllCarsAvailableAsync(brand);
+            var res = carService.GetAllCarsAvailableAsync(brand);
 
             if (res.Message.Contains("There is no cars available right now")) return NoContent();
 

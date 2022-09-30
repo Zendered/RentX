@@ -18,6 +18,7 @@ namespace RentX
 
             CreateMap<GetSpecificationDto, Specification>();
             CreateMap<AddSpecificationDto, Specification>();
+            CreateMap<AddCarSpecificationDto, Specification>();
 
             CreateMap<Specification, GetSpecificationDto>();
 

@@ -42,6 +42,7 @@ builder.Services.AddSwaggerGen(config =>
 });
 
 builder.Services.AddHttpContextAccessor();
+
 var config = new ConfigurationBuilder()
     .AddJsonFile("appsettings.Development", true)
     .AddUserSecrets(typeof(Program).Assembly, true)
@@ -60,19 +61,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8
-            .GetBytes(config["AppSettings:Token"])),
+            .GetBytes(builder.Configuration["AppSettings:Token"])),
             ValidateIssuer = false,
             ValidateAudience = false
         };
     });
 
-//var ConnectionString = config["ConnectionStrings:DefaultConnection"];
-//builder.Services.AddDbContext<DataContext>(option => option.UseSqlServer(ConnectionString));
+var connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
+builder.Services.AddDbContext<DataContext>(option => option.UseSqlServer(connectionString));
 
-builder.Services
-    .AddDbContext<DataContext>(
-    option =>
-    option.UseInMemoryDatabase("rentxdb")); // Test Db 
+//builder.Services
+//    .AddDbContext<DataContext>(
+//    option =>
+//option.UseInMemoryDatabase("rentxdb")); // Test Db 
 
 var app = builder.Build();
 
@@ -83,8 +84,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//DatabaseManagementService.MigrationInitialisation(app);
-
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -92,5 +91,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+DatabaseManagementService.MigrationInitialisation(app);
 
 app.Run();

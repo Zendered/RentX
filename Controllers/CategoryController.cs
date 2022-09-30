@@ -79,19 +79,6 @@ namespace RentX.Controllers
         }
         #endregion
 
-        #region GetCategoryCSVFile
-        //[HttpGet("category-csv-file")]
-        //public ActionResult<ServiceResponse<GetCategoryDto>> GetCategoryCSVFile(string fileName)
-        //{
-        //    var res = categoryService.GetCategoryCSVFile(fileName);
-        //    var error = new ServiceResponseException<GetCategoryDto>(
-        //        null, "Invalid Name/Description, please try again"
-        //        );
-
-        //    return Ok(res);
-        //}
-        #endregion
-
         #region RemoveCategoryAsync
         [SwaggerOperation(Summary = "Remove a category", Description = "it's necessary to be logged in")]
         [SwaggerResponse(200, "Category deleted", typeof(ServiceResponse<string>))]
@@ -107,6 +94,19 @@ namespace RentX.Controllers
                 Ok(res) :
                 BadRequest(res);
         }
+        #endregion
+
+        #region GetCategoryCSVFile
+        //[HttpGet("category-csv-file")]
+        //public ActionResult<ServiceResponse<GetCategoryDto>> GetCategoryCSVFile(string fileName)
+        //{
+        //    var res = categoryService.GetCategoryCSVFile(fileName);
+        //    var error = new ServiceResponseException<GetCategoryDto>(
+        //        null, "Invalid Name/Description, please try again"
+        //        );
+
+        //    return Ok(res);
+        //}
         #endregion
     }
 }
