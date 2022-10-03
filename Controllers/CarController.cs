@@ -87,12 +87,12 @@ namespace RentX.Controllers
         }
         #endregion
 
-        #region GetAvailableByIdCars
-        [SwaggerOperation(Summary = "Get a car by his id", Description = "it's necessary to be logged in")]
+        #region GetAvailableByCategoryId
+        [SwaggerOperation(Summary = "Get a car by category id", Description = "it's necessary to be logged in")]
         [SwaggerResponse(204, "There is no cars available right now", typeof(ServiceResponse<GetCarDto>))]
         [SwaggerResponse(404, "There is no cars with this category id", typeof(ServiceResponse<string>))]
         [HttpGet("available-by-id/{categoryId}")]
-        public ActionResult<ServiceResponse<GetCarDto>> GetAvailableByIdCars(Guid categoryId)
+        public ActionResult<ServiceResponse<GetCarDto>> GetAvailableByCategoryId(Guid categoryId)
         {
             var res = carService.GetAllCarsAvailableAsync(categoryId);
 
