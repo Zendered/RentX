@@ -12,6 +12,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Migrations\20221003200944_RentalModel.cs" />
+    <Compile Remove="Data\Migrations\20221003200944_RentalModel.Designer.cs" />
+    <Compile Remove="Data\Migrations\20221003201439_RentalModel.cs" />
+    <Compile Remove="Data\Migrations\20221003201439_RentalModel.Designer.cs" />
+    <Compile Remove="Data\Migrations\20221003211047_RentalModel.cs" />
+    <Compile Remove="Data\Migrations\20221003211047_RentalModel.Designer.cs" />
+    <Compile Remove="Data\Migrations\20221003212353_RentalModel.cs" />
+    <Compile Remove="Data\Migrations\20221003212353_RentalModel.Designer.cs" />
+    <Compile Remove="Data\Migrations\20221003212940_RentalModel.cs" />
+    <Compile Remove="Data\Migrations\20221003212940_RentalModel.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="CsvHelper" Version="28.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />

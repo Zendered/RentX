@@ -8,6 +8,7 @@ namespace RentX.Data
         public DbSet<Car> Cars { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Specification> Specifications { get; set; }
+        public DbSet<Rental> Rentals { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
     }

@@ -11,6 +11,7 @@
         public int FineAmount { get; set; }
         public string Brand { get; set; } = string.Empty;
         public List<Specification> Specifications { get; set; } = new List<Specification>();
+        public Rental Rentals { get; set; } = new Rental();
         public Guid CategoryId { get; set; }
         public DateTime Created_At { get; set; } = DateTime.Now;
     }
