@@ -7,6 +7,7 @@ using RentX.Data;
 using RentX.Services.Authentication;
 using RentX.Services.Cars;
 using RentX.Services.Categories;
+using RentX.Services.Rentals;
 using RentX.Services.Specifications;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
@@ -18,6 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+#region Swagger config
 builder.Services.AddSwaggerGen(config =>
 {
     config.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -40,6 +42,7 @@ builder.Services.AddSwaggerGen(config =>
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     config.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
+#endregion
 
 builder.Services.AddHttpContextAccessor();
 
@@ -49,11 +52,16 @@ var config = new ConfigurationBuilder()
     .Build();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+#region Interfaces
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ISpeficicationService, SpeficicationService>();
+builder.Services.AddScoped<IRentalService, RentalService>();
+#endregion
 
+#region AuthenticationJwt
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(opt =>
     {
@@ -66,14 +74,23 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false
         };
     });
+#endregion
+
+#region Database SqlServer Connection
 
 var connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
 builder.Services.AddDbContext<DataContext>(option => option.UseSqlServer(connectionString));
+
+#endregion
+
+#region Database MemoryDatabase Connection
 
 //builder.Services
 //    .AddDbContext<DataContext>(
 //    option =>
 //option.UseInMemoryDatabase("rentxdb")); // Test Db 
+
+#endregion
 
 var app = builder.Build();
 
