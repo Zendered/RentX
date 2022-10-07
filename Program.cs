@@ -19,7 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-#region Swagger config
+#region Swagger
 builder.Services.AddSwaggerGen(config =>
 {
     config.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -52,6 +52,7 @@ var config = new ConfigurationBuilder()
     .Build();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+builder.Services.AddHttpContextAccessor();
 
 #region Interfaces
 builder.Services.AddScoped<ICategoryService, CategoryService>();
