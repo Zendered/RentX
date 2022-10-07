@@ -9,7 +9,9 @@
         public string DriverLicense { get; set; } = string.Empty;
         public bool Admin { get; set; } = false;
         public string? Avatar { get; set; } = string.Empty;
+
+        public Rental? Rental { get; set; }
+
         public DateTime Created_At { get; set; } = DateTime.Now;
-        public Rental Rentals { get; set; } = new Rental();
     }
 }
