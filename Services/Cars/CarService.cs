@@ -238,9 +238,31 @@ namespace RentX.Services.Cars
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResponse<GetCarDto>> updateAvailable(Guid id, bool available = true)
+        public async Task<ServiceResponse<GetCarDto>> updateAvailable(Guid id, bool available)
         {
-            throw new NotImplementedException();
+            var res = new ServiceResponse<GetCarDto>();
+            try
+            {
+                var car = await carContext.Cars.FirstOrDefaultAsync(car => car.Id == id);
+
+                if (car is null)
+                {
+                    res.Data = null;
+                    res.Success = false;
+                    res.Message = "not founded";
+                    return res;
+                }
+
+                car.Available = available;
+                await carContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Success = false;
+                res.Message = ex.Message;
+            }
+            return res;
         }
 
         public async Task<ServiceResponse<GetCarDto>> RemoveCarAsync(Guid id, bool available = true)
@@ -272,22 +294,5 @@ namespace RentX.Services.Cars
             }
             return res;
         }
-
-        //public async Task<ServiceResponse<List<GetCarDto>>> GetAllCarsAvailableAsync(string? name)
-        //{
-        //    var res = new ServiceResponse<List<GetCarDto>>();
-
-        //    try
-        //    {
-        //        var car = carContext.Cars.Where(c => c.Available == true).ToList();
-        //        res.Data = mapper.Map<List<GetCarDto>>(car);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        res.Success = false;
-        //        res.Message = ex.Message;
-        //    }
-        //    return res;
-        //}
     }
 }

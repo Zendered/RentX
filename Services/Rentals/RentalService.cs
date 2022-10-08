@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using RentX.Data;
 using RentX.Dtos.Rental;
+using RentX.Services.Cars;
+using RentX.Tools.IsValidData;
 using System.Data;
 using System.Security.Claims;
 
@@ -12,12 +14,14 @@ namespace RentX.Services.Rentals
         private readonly DataContext ctx;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor contextAccessor;
+        private readonly ICarService carService;
 
-        public RentalService(DataContext ctx, IMapper mapper, IHttpContextAccessor contextAccessor)
+        public RentalService(DataContext ctx, IMapper mapper, IHttpContextAccessor contextAccessor, ICarService carService)
         {
             this.ctx = ctx;
             this.mapper = mapper;
             this.contextAccessor = contextAccessor;
+            this.carService = carService;
         }
 
         int minHour = 24;
@@ -27,6 +31,8 @@ namespace RentX.Services.Rentals
 
             try
             {
+
+
                 var rent = mapper.Map<Rental>(data);
 
                 var rentExists = await ctx.Rentals
@@ -41,6 +47,8 @@ namespace RentX.Services.Rentals
                 }
 
                 rent.UserId = GetUserId();
+                await carService.updateAvailable(data.CarId, false);
+
                 await ctx.Rentals.AddAsync(rent);
                 await ctx.SaveChangesAsync();
 
@@ -55,6 +63,27 @@ namespace RentX.Services.Rentals
                 res.Message = ex.Message;
             }
             return res;
+        }
+
+        public Task<ServiceResponse<GetRentalDto>> DevolutionRental(GetRentalDto data)
+        {
+            var res = new ServiceResponse<GetRentalDto>();
+            try
+            {
+                var isValid = IsValidData.IsValid(data.Id.ToString(), data.UserId.ToString(), data.UserId.ToString());
+
+                if (isValid is false)
+                {
+                    res.Success = false;
+                    res.Data = null;
+                    res.Message = "Invalid Data";
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<ServiceResponse<GetRentalDto>> FindOpenRentalByCarAsync(Guid carId)
