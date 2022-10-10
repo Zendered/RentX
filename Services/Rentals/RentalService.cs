@@ -32,21 +32,10 @@ namespace RentX.Services.Rentals
             {
                 var rent = mapper.Map<Rental>(data);
 
-                var returnDate = DateTime.Compare(DateTime.Now, data.Expected_Return_Date);
+                int returnDate = DateTime.Compare(data.Expected_Return_Date, DateTime.UtcNow);
+                bool lessThen24Hr = IsValidDate(data);
 
-                var today = DateTime.Now.Day;
-                var month = DateTime.Now.Month;
-                var year = DateTime.Now.Year;
-
-                var sla = data.Expected_Return_Date.Day;
-                var sla1 = data.Expected_Return_Date.Month;
-                var sla2 = data.Expected_Return_Date.Year;
-
-                var expectedDate = $"{sla}/{sla1}/{sla2}";
-
-                var lessThen24Hr = DateTime.Parse(expectedDate) < DateTime.Parse($"{today}/{month}/{year}");
-
-                if (returnDate < 0 || lessThen24Hr)
+                if (returnDate < 0 || lessThen24Hr is false)
                 {
                     res.Success = false;
                     res.Data = null;
@@ -183,6 +172,24 @@ namespace RentX.Services.Rentals
             throw new NotImplementedException();
         }
 
+        private static bool IsValidDate(AddRentalDto data)
+        {
+            var day = DateTime.Now.Day;
+            var month = DateTime.Now.Month;
+            var year = DateTime.Now.Year;
+            //var TodayDate = DateTime.Parse($"{year}/{month}/{day}");
+
+            var wrongDay = data.Expected_Return_Date.Day < day;
+            var wrongMonth = data.Expected_Return_Date.Month < month;
+            var wrongYear = data.Expected_Return_Date.Year < year;
+
+            //var expectedUserDate = DateTime.Parse($"{expectedUserYear}/{expectedUserMonth}/{expectedUserDay}");
+            //var lessThen24Hr = expectedUserDate < TodayDate;
+
+            if (wrongDay || wrongMonth || wrongYear) return false;
+
+            return true;
+        }
         public Guid GetUserId() => Guid.Parse(
             contextAccessor?.HttpContext?.User
             .FindFirstValue(ClaimTypes.NameIdentifier)
