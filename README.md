@@ -1,4 +1,4 @@
-﻿# RentX
+﻿﻿# RentX
  
 ## Tecnologias usada ⚙️
 
@@ -30,8 +30,8 @@ docker-compose up
 http://localhost:8080/swagger/index.html
 ```
 
-# Schema do database 🗄️
+# Database schema🗄️
 
-![image](https://user-images.githubusercontent.com/42588918/189143182-6426fdd7-8bd5-4478-87a6-7f24b797b95b.png)
+![image](https://user-images.githubusercontent.com/42588918/194580383-fdffc036-0923-43a3-9cbe-d16f7282ab69.png)
 
 > Ainda em desenvolvimento ⚠️
