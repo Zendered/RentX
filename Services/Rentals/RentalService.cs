@@ -177,14 +177,10 @@ namespace RentX.Services.Rentals
             var day = DateTime.Now.Day;
             var month = DateTime.Now.Month;
             var year = DateTime.Now.Year;
-            //var TodayDate = DateTime.Parse($"{year}/{month}/{day}");
 
             var wrongDay = data.Expected_Return_Date.Day < day;
             var wrongMonth = data.Expected_Return_Date.Month < month;
             var wrongYear = data.Expected_Return_Date.Year < year;
-
-            //var expectedUserDate = DateTime.Parse($"{expectedUserYear}/{expectedUserMonth}/{expectedUserDay}");
-            //var lessThen24Hr = expectedUserDate < TodayDate;
 
             if (wrongDay || wrongMonth || wrongYear) return false;
 
