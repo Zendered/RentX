@@ -24,16 +24,35 @@ namespace RentX.Services.Rentals
             this.carService = carService;
         }
 
-        int minHour = 24;
         public async Task<ServiceResponse<GetRentalDto>> CreateRentalAsync(AddRentalDto data)
         {
             var res = new ServiceResponse<GetRentalDto>();
 
             try
             {
-
-
                 var rent = mapper.Map<Rental>(data);
+
+                var returnDate = DateTime.Compare(DateTime.Now, data.Expected_Return_Date);
+
+                var today = DateTime.Now.Day;
+                var month = DateTime.Now.Month;
+                var year = DateTime.Now.Year;
+
+                var sla = data.Expected_Return_Date.Day;
+                var sla1 = data.Expected_Return_Date.Month;
+                var sla2 = data.Expected_Return_Date.Year;
+
+                var expectedDate = $"{sla}/{sla1}/{sla2}";
+
+                var lessThen24Hr = DateTime.Parse(expectedDate) < DateTime.Parse($"{today}/{month}/{year}");
+
+                if (returnDate < 0 || lessThen24Hr)
+                {
+                    res.Success = false;
+                    res.Data = null;
+                    res.Message = "Invalid return time";
+                    return res;
+                }
 
                 var rentExists = await ctx.Rentals
                     .FirstOrDefaultAsync(rent => rent.UserId == GetUserId());
@@ -65,7 +84,7 @@ namespace RentX.Services.Rentals
             return res;
         }
 
-        public Task<ServiceResponse<GetRentalDto>> DevolutionRental(GetRentalDto data)
+        public async Task<ServiceResponse<GetRentalDto>> DevolutionRentalAsync(GetRentalDto data)
         {
             var res = new ServiceResponse<GetRentalDto>();
             try
@@ -77,13 +96,26 @@ namespace RentX.Services.Rentals
                     res.Success = false;
                     res.Data = null;
                     res.Message = "Invalid Data";
+                    return res;
+                }
+
+                var rental = await ctx.Rentals.FirstOrDefaultAsync(rental => rental.Id == data.Id);
+
+                if (rental is null)
+                {
+                    res.Success = false;
+                    res.Data = null;
+                    res.Message = "Rental doest exists";
+                    return res;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                res.Success = false;
+                res.Data = null;
+                res.Message = ex.Message;
             }
+            return res;
         }
 
         public async Task<ServiceResponse<GetRentalDto>> FindOpenRentalByCarAsync(Guid carId)
@@ -149,12 +181,6 @@ namespace RentX.Services.Rentals
         public Task<ServiceResponse<GetRentalDto>> FindRentalByUserAsync(GetRentalDto userId)
         {
             throw new NotImplementedException();
-        }
-
-        private int CompareInHours(DateTime startDate, DateTime endDate)
-        {
-            var diference = DateTime.Compare(startDate, endDate);
-            return diference;
         }
 
         public Guid GetUserId() => Guid.Parse(
