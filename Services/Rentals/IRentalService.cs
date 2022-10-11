@@ -9,7 +9,7 @@ namespace RentX.Services.Rentals
         Task<ServiceResponse<GetRentalDto>> CreateRentalAsync(AddRentalDto data);
         Task<ServiceResponse<GetRentalDto>> FindRentalByIdAsync(GetRentalDto rentalId);
         Task<ServiceResponse<GetRentalDto>> FindRentalByUserAsync(GetRentalDto userId);
-        Task<ServiceResponse<GetRentalDto>> DevolutionRentalAsync(GetRentalDto data);
+        Task<ServiceResponse<GetRentalDto>> DevolutionRentalAsync(RentalsDevolutionDto data);
 
     }
 }

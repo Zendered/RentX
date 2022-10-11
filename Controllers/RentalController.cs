@@ -31,11 +31,19 @@ namespace RentX.Controllers
         }
         #endregion
 
-        #region Make rental
-        [HttpGet("carId")]
-        public async Task<ActionResult<ServiceResponse<GetRentalDto>>> FindOpenRentalByCar(Guid carId)
+        #region Rentals devolution
+        [SwaggerOperation(Summary = "rentals devolution", Description = "it's necessary to be logged in")]
+        [SwaggerResponse(201, "Rent made successfully", typeof(ServiceResponse<GetRentalDto>))]
+        [SwaggerResponse(400, "User already has a rent", typeof(ServiceResponse<string>))]
+        [HttpPost("devolution/{rentalId}")]
+        public async Task<ActionResult<ServiceResponse<GetRentalDto>>> RentalsDevolution(Guid rentalId)
         {
-            var res = await service.FindOpenRentalByCarAsync(carId);
+            var req = new RentalsDevolutionDto()
+            {
+                Id = rentalId,
+            };
+
+            var res = await service.DevolutionRentalAsync(req);
 
             return res.Success ? Ok(res) : BadRequest(res);
         }

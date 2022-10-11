@@ -44,6 +44,7 @@ namespace RentX.Services.Rentals
                 }
 
                 var rentExists = await ctx.Rentals
+                    .Where(end => end.End_Date.Year == 001)
                     .FirstOrDefaultAsync(rent => rent.UserId == GetUserId());
 
                 if (rentExists is not null)
@@ -54,6 +55,16 @@ namespace RentX.Services.Rentals
                     return res;
                 }
 
+                var carIsAvailable = await ctx.Cars.FirstOrDefaultAsync(car => car.Id == data.CarId);
+                if (carIsAvailable.Available is false || carIsAvailable is null)
+                {
+                    res.Success = false;
+                    res.Data = null;
+                    res.Message = "Car is unavailable";
+                    return res;
+                }
+
+                rent.Start_Date = DateTime.UtcNow;
                 rent.UserId = GetUserId();
                 await carService.updateAvailable(data.CarId, false);
 
@@ -73,14 +84,14 @@ namespace RentX.Services.Rentals
             return res;
         }
 
-        public async Task<ServiceResponse<GetRentalDto>> DevolutionRentalAsync(GetRentalDto data)
+        public async Task<ServiceResponse<GetRentalDto>> DevolutionRentalAsync(RentalsDevolutionDto data)
         {
             var res = new ServiceResponse<GetRentalDto>();
             try
             {
-                var isValid = IsValidData.IsValid(data.Id.ToString(), data.UserId.ToString(), data.UserId.ToString());
+                var invalidData = IsValidData.IsValid(data.Id.ToString(), data.UserId.ToString(), data.CarId.ToString());
 
-                if (isValid is false)
+                if (invalidData)
                 {
                     res.Success = false;
                     res.Data = null;
@@ -88,6 +99,7 @@ namespace RentX.Services.Rentals
                     return res;
                 }
 
+                data.UserId = GetUserId();
                 var rental = await ctx.Rentals.FirstOrDefaultAsync(rental => rental.Id == data.Id);
 
                 if (rental is null)
@@ -97,6 +109,44 @@ namespace RentX.Services.Rentals
                     res.Message = "Rental doest exists";
                     return res;
                 }
+
+                var car = await ctx.Cars.FirstOrDefaultAsync(car => car.Id == rental.CarId);
+
+                if (car is null)
+                {
+                    res.Success = false;
+                    res.Data = null;
+                    res.Message = "Car doest exists";
+                    return res;
+                }
+
+                var daily = rental.Expected_Return_Date.Day - DateTime.UtcNow.Day;
+                if (daily <= 0)
+                {
+                    daily = 1;
+                }
+
+                int total = 0;
+
+                var delay = DateTime.Compare(DateTime.UtcNow, rental.Expected_Return_Date);
+                if (delay > 0)
+                {
+                    var calculateFine = DateTime.UtcNow.Day % rental.Expected_Return_Date.Day;
+                    total = calculateFine;
+                }
+
+                total += daily * car.Daily_Rate;
+                rental.Total = total;
+                rental.End_Date = DateTime.UtcNow;
+
+                var addRental = mapper.Map<AddRentalDto>(rental);
+                var rentalToReturn = mapper.Map<GetRentalDto>(rental);
+                await CreateRentalAsync(addRental);
+                await carService.updateAvailable(car.Id, true);
+                await ctx.SaveChangesAsync();
+
+                res.Data = rentalToReturn;
+                res.Message = "Car returned";
             }
             catch (Exception ex)
             {

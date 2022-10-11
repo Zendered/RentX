@@ -32,6 +32,7 @@ namespace RentX
             CreateMap<Car, GetCarDto>();
 
             CreateMap<Rental, GetRentalDto>();
+            CreateMap<Rental, AddRentalDto>();
         }
     }
 }
