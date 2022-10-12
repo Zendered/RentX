@@ -48,5 +48,18 @@ namespace RentX.Controllers
             return res.Success ? Ok(res) : BadRequest(res);
         }
         #endregion
+
+        #region User Rentals
+        [SwaggerOperation(Summary = "Rentals the user has", Description = "it's necessary to be logged in")]
+        [SwaggerResponse(201, "Rent made successfully", typeof(ServiceResponse<GetRentalDto>))]
+        [SwaggerResponse(400, "User already has a rent", typeof(ServiceResponse<string>))]
+        [HttpGet]
+        public async Task<ActionResult<ServiceResponse<GetRentalDto>>> UserRentals()
+        {
+            var res = await service.FindRentalByUserAsync();
+
+            return res.Success ? Ok(res) : BadRequest(res);
+        }
+        #endregion
     }
 }

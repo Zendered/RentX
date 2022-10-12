@@ -8,7 +8,7 @@ namespace RentX.Services.Rentals
         Task<ServiceResponse<GetRentalDto>> FindOpenRentalByUserAsync(Guid userId);
         Task<ServiceResponse<GetRentalDto>> CreateRentalAsync(AddRentalDto data);
         Task<ServiceResponse<GetRentalDto>> FindRentalByIdAsync(GetRentalDto rentalId);
-        Task<ServiceResponse<GetRentalDto>> FindRentalByUserAsync(GetRentalDto userId);
+        Task<ServiceResponse<List<GetRentalDto>>> FindRentalByUserAsync();
         Task<ServiceResponse<GetRentalDto>> DevolutionRentalAsync(RentalsDevolutionDto data);
 
     }

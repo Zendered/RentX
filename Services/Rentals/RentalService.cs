@@ -131,7 +131,7 @@ namespace RentX.Services.Rentals
                 var delay = DateTime.Compare(DateTime.UtcNow, rental.Expected_Return_Date);
                 if (delay > 0)
                 {
-                    var calculateFine = DateTime.UtcNow.Day % rental.Expected_Return_Date.Day;
+                    var calculateFine = DateTime.UtcNow.Day * rental.Expected_Return_Date.Day;
                     total = calculateFine;
                 }
 
@@ -153,6 +153,37 @@ namespace RentX.Services.Rentals
                 res.Success = false;
                 res.Data = null;
                 res.Message = ex.Message;
+            }
+            return res;
+        }
+
+        public async Task<ServiceResponse<List<GetRentalDto>>> FindRentalByUserAsync()
+        {
+            var res = new ServiceResponse<List<GetRentalDto>>();
+            try
+            {
+                var userId = GetUserId();
+
+                var rental = await ctx.Rentals
+                    .Include(c => c.Car)
+                    .Where(rental => rental.UserId == userId)
+                    .ToListAsync();
+
+                if (rental is null)
+                {
+                    res.Success = false;
+                    res.Data = null;
+                    res.Message = "User don't have any rental in the moment";
+                }
+
+                var returnRental = mapper.Map<List<GetRentalDto>>(rental);
+                res.Data = returnRental;
+            }
+            catch (Exception ex)
+            {
+                res.Success = false;
+                res.Message = ex.Message;
+                res.Data = null;
             }
             return res;
         }
@@ -213,11 +244,6 @@ namespace RentX.Services.Rentals
         }
 
         public Task<ServiceResponse<GetRentalDto>> FindRentalByIdAsync(GetRentalDto rentalId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ServiceResponse<GetRentalDto>> FindRentalByUserAsync(GetRentalDto userId)
         {
             throw new NotImplementedException();
         }
