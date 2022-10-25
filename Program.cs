@@ -19,16 +19,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-#region Swagger
+#region Swagger/Authentication
 builder.Services.AddSwaggerGen(config =>
 {
     config.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     {
         Description = "Standard Authorization header using the Bearer scheme, e.g \" Bearer {token} \"",
         In = ParameterLocation.Header,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey
-    });
+    }); ;
     config.OperationFilter<SecurityRequirementsOperationFilter>();
     config.EnableAnnotations();
 
@@ -36,7 +38,8 @@ builder.Services.AddSwaggerGen(config =>
     {
         Title = "RentX",
         Version = "v1",
-        Description = "Rent for cars API"
+        Description = "Rent for cars API",
+        License = new OpenApiLicense { Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT") }
     });
 
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -110,6 +113,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-DatabaseManagementService.MigrationInitialisation(app);
+//DatabaseManagementService.MigrationInitialisation(app);
 
 app.Run();

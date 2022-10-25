@@ -40,8 +40,15 @@ namespace RentX.Services.Authentication
                 return res;
             }
 
+            var userToken = new
+            {
+                Bearer = $"Bearer {CreateToken(user)} ",
+                refresh = $"Bearer {CreateRefreshToken(user)} "
+
+            };
+
             res.Message = $"Welcome {user.Email.ToLower().ToString().Trim()}";
-            res.Data = $"Bearer {CreateToken(user)}";
+            res.Data = userToken.ToString();
             return res;
         }
 
@@ -120,6 +127,56 @@ namespace RentX.Services.Authentication
 
             return tokenHandler.WriteToken(token);
         }
+
+        private string CreateRefreshToken(User user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.
+                GetBytes(config["AppSettings:Token"]));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Issuer = "http://localhost/",
+                Audience = "Rentx.API",
+                SigningCredentials = creds,
+                Subject = new ClaimsIdentity(claims),
+                NotBefore = DateTime.Now,
+                Expires = DateTime.Now.AddDays(30),
+                TokenType = "rt+jwt"
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token);
+        }
+
+        //private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        //{
+        //    var tokenValidation = new TokenValidationParameters
+        //    {
+        //        ValidateAudience = false,
+        //        ValidateIssuer = false,
+        //        ValidateIssuerSigningKey = true,
+        //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["AppSettings:Token"])),
+        //        ValidateLifetime = false
+        //    };
+
+        //    var tokenHandler = new JwtSecurityTokenHandler();
+        //    var principal = tokenHandler
+        //        .ValidateToken(token, tokenValidation, out var securityToken);
+        //    if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+        //        !jwtSecurityToken.Header.Alg.Equals(
+        //            SecurityAlgorithms.HmacSha256Signature, StringComparison.InvariantCulture))
+        //        throw new SecurityTokenException("Invalid Token");
+
+        //    return principal;
+        //}
 
         public Guid GetUserId() => Guid.Parse(
             contextAccessor?.HttpContext?.User
